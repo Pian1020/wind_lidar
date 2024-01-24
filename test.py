@@ -16,7 +16,8 @@ def createDataset(path):
         if file.endswith(".hpl"):
             # Extracts the date and time information from the filename
             date_time_str = file.split("_")[-2] + "_" + file.split("_")[-1].split(".")[0]
-            time_stamps.append(date_time_str)
+            hour_str = date_time_str[9:11] + ':' + date_time_str[11:13]
+            time_stamps.append(hour_str)
             # opens the current file and reads all the lines
             with open(os.path.join(path, file), "r") as f:
                 # removes the first line
@@ -42,6 +43,8 @@ def make_color_map(start_color, end_color, num_steps):
     return np.column_stack((r, g, b))
 
 def draw(dataset, count, time_stamps):
+
+    # Create color map
     cmap1 = make_color_map([1, 1, 1], [0.92, 0.92, 0.92], 5)
     cmap2 = make_color_map([0.92, 0.92, 0.92], [0.460, 0.829, 1], 20)
     cmap3 = make_color_map([0.460, 0.829, 1], [0.316, 1, 0.316], 20)
@@ -51,28 +54,32 @@ def draw(dataset, count, time_stamps):
     # Concatenate the colormaps
     c_map = np.vstack((np.ones((3, 3)), cmap1, cmap2, cmap3, cmap4, cmap5, np.zeros((3, 3))))
     custom_cmap = LinearSegmentedColormap.from_list('custom_cmap', c_map, N=256)
-    # 將起始和結束位置固定為白色和黑色
-    # c_map.set_under('white')
-    # c_map.set_over('black')
+
     plt.figure(figsize=(12, 6))
     
-    # 設定橫軸
+
+    # 設定資料
     plt.xlabel("datetime")
     Z = []
     for iter in dataset:
         Z.append(iter.T[2].astype(float)[:116])
+    Z = np.array(Z)
+    # 設定XY軸
+    # time_range = os.listdir("/ProcessedData")
+    # start = time_range[0]
+    # start_hour = (start.split('_')[5][0:2])
     X = np.arange(1, count+1, 1)
     Y = iter.T[0].astype(float)[:116]
     xx, yy = np.meshgrid(X, Y)
-    # 設定縱軸
     plt.ylabel("height")
-    Z = np.array(Z)
-    print(Z)
 
     # 繪製風速資料
-    # for i in range(count):
     plt.pcolormesh(xx, yy, Z.T, cmap=custom_cmap)
-    #plt.gca().set_aspect('equal')  # Ensure equal aspect ratio for clarity
+
+    # Ensure equal aspect ratio for clarity
+    # plt.gca().set_aspect('equal')  
+    plt.xticks(range(0, len(time_stamps), 24), time_stamps[::24], rotation='vertical')
+    # plt.xticks(X, time_stamps, rotation='vertical')
 
     # 設定colorbar
     cbar = plt.colorbar(label='Wind Speed')
