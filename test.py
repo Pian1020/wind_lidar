@@ -4,20 +4,21 @@ from pylab import *
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
+from datetime import datetime, timedelta
+import matplotlib.dates as mdates
 
 def createDataset(path):
-    # creates an dictionary to hold data <string, list>
-    dataset = []
-    time_stamps = []
+    # creates an empty list to store the DataFrames
+    df_list = []
 
     # loop that iterates over all the files in the directory
     for file in os.listdir(path):
         # checks if the current file ends with the ".hpl"
         if file.endswith(".hpl"):
             # Extracts the date and time information from the filename
-            date_time_str = file.split("_")[-2] + "_" + file.split("_")[-1].split(".")[0]
-            hour_str = date_time_str[9:11] + ':' + date_time_str[11:13]
-            time_stamps.append(hour_str)
+            timestamp = file.split("_")[-2] + file.split("_")[-1].split(".")[0]
+            format = "%Y%m%d%H%M%S"
+            timestamp = datetime.strptime(timestamp, format)
             # opens the current file and reads all the lines
             with open(os.path.join(path, file), "r") as f:
                 # removes the first line
@@ -25,16 +26,25 @@ def createDataset(path):
                 lines = lines[1:]
                 
                 # splits each line into three elements
-                data = np.array([line.split() for line in lines])
-                dataset.append(data)
-    return np.array(dataset), time_stamps
+                data = [line.split() for line in lines]
+                
+                # creates a DataFrame from the three elements
+                df = pd.DataFrame(data, columns=["height", "wind_direction", "wind_speed"])
+                # adds the datetime to the list
+                df["datetime"] = timestamp
+                # adds the DataFrame to the list
+                df_list.append(df)
 
-def dataSetToFloat(dataset):
-    for iter in range(len(dataset)):
-        for it in range(len(dataset[iter])):
-            for i in range(len(dataset[iter][it])):
-                dataset[iter][it][i] = float(dataset[iter][it][i])
-    return dataset
+    # 將df_list轉換為DataFrame
+    df_multi = pd.concat(df_list)
+
+    # print DataFrame
+
+    df_multi['height'] = df_multi['height'].astype(int)
+    df_multi['wind_direction'] = df_multi['wind_direction'].astype(float)
+    df_multi['wind_speed'] = df_multi['wind_speed'].astype(float)
+
+    return df_multi
 
 def make_color_map(start_color, end_color, num_steps):
     r = np.linspace(start_color[0], end_color[0], num_steps)
@@ -42,7 +52,15 @@ def make_color_map(start_color, end_color, num_steps):
     b = np.linspace(start_color[2], end_color[2], num_steps)
     return np.column_stack((r, g, b))
 
-def draw(dataset, count, time_stamps):
+def timeAdjust(dataset, start, end):
+    selected_data = dataset[(dataset['datetime'] >= start) & (dataset['datetime'] <= end)]
+    return selected_data
+
+def heightAdjust(dataset, start, end):
+    selected_data = dataset[(dataset['height'] >= start) & (dataset['height'] <= end)]
+    return selected_data
+
+def draw(dataset, start_time, end_time, start_height, end_height):
 
     # Create color map
     cmap1 = make_color_map([1, 1, 1], [0.92, 0.92, 0.92], 5)
@@ -56,54 +74,69 @@ def draw(dataset, count, time_stamps):
     custom_cmap = LinearSegmentedColormap.from_list('custom_cmap', c_map, N=256)
 
     plt.figure(figsize=(12, 6))
-    
 
-    # 設定資料
+    # Create time stamps show on the graph
+
+    time_diff = (end_time - start_time) / 19
+    evenly_spaced_datetimes = []
+    evenly_spaced_datetimes.append(start_time)
+    for i in range(1, 19):
+        evenly_spaced_datetimes.append(start_time + i * time_diff)
+    evenly_spaced_datetimes.append(end_time)
     plt.xlabel("datetime")
-    Z = []
-    for iter in dataset:
-        Z.append(iter.T[2].astype(float)[:116])
-    Z = np.array(Z)
-    # 設定XY軸
-    # time_range = os.listdir("/ProcessedData")
-    # start = time_range[0]
-    # start_hour = (start.split('_')[5][0:2])
-    X = np.arange(1, count+1, 1)
-    Y = iter.T[0].astype(float)[:116]
-    xx, yy = np.meshgrid(X, Y)
+
+    # Create height stamps to show on the graph
+    step_size = (end_height - start_height) / 9
+    evenly_spaced_numbers = []
+    evenly_spaced_numbers.append(start_height)
+    for i in range(1, 9):
+        evenly_spaced_numbers.append(start_height + i * step_size)
+    evenly_spaced_numbers.append(end_height)
     plt.ylabel("height")
 
     # 繪製風速資料
+    X = np.unique(dataset['datetime'].values)
+    Y = np.unique(dataset['height'].values)
+    Z = []
+    for date in X:
+        Z.append(dataset[(dataset['datetime'] == date)]['wind_speed'])
+    Z = np.array(Z)
+    # Z = dataset['wind_speed'].values
+    xx, yy = np.meshgrid(X, Y)
     plt.pcolormesh(xx, yy, Z.T, cmap=custom_cmap)
-
-    # Ensure equal aspect ratio for clarity
-    # plt.gca().set_aspect('equal')  
-    plt.xticks(range(0, len(time_stamps), 24), time_stamps[::24], rotation='vertical')
-    # plt.xticks(X, time_stamps, rotation='vertical')
-
+    plt.gca().xaxis.set_major_locator(mdates.HourLocator(interval=1))
+    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
+    plt.xticks(evenly_spaced_datetimes, rotation=45)
+    plt.yticks(evenly_spaced_numbers)
     # 設定colorbar
     cbar = plt.colorbar(label='Wind Speed')
     plt.clim(0, 15)
 
-    # 顯示圖表
+    # # 顯示圖表
     plt.show()
 
-    plt.savefig('wind.png')
+    # plt.savefig('wind.png')
 
 if __name__ == "__main__":
+
+    start_time = input()
+    end_time = input()
+    start_height = int(input())
+    end_height = int(input())
 
     # defines the file directory that contains the HPL files
     root = os.getcwd()
     file_path = root + "/ProcessedData"
 
     # Read file from the disk
-    dataset, time_stamps = createDataset(file_path)
-    print(dataset.shape)
-
-    # Modify the all elements in the dictionary into numbers from string
-    dataset = dataSetToFloat(dataset)
+    dataset = createDataset(file_path)
     
-    number_of_data = len(os.listdir(file_path))
+    # Costumize dataset
+    format = "%Y/%m/%d %H:%M:%S"
+    start_time = datetime.strptime(start_time, format)
+    end_time = datetime.strptime(end_time, format)
+    adjusted_dataset = timeAdjust(dataset, start_time, end_time)
+    adjusted_dataset = heightAdjust(adjusted_dataset, start_height, end_height) 
 
-    draw(dataset, number_of_data, time_stamps)
+    draw(adjusted_dataset, start_time, end_time, start_height, end_height)
     
