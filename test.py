@@ -83,7 +83,7 @@ def draw(dataset, start_time, end_time, start_height, end_height):
     for i in range(1, 19):
         evenly_spaced_datetimes.append(start_time + i * time_diff)
     evenly_spaced_datetimes.append(end_time)
-    plt.xlabel("Local Time")
+    plt.xlabel("Time (LT)")
 
     # Create height stamps to show on the graph
     step_size = (end_height - start_height) / 9
