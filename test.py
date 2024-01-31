@@ -105,7 +105,7 @@ def draw(dataset, start_time, end_time, start_height, end_height):
     xx, yy = np.meshgrid(X, Y)
     plt.pcolormesh(xx, yy, Z.T, cmap=custom_cmap)
     plt.gca().xaxis.set_major_locator(mdates.HourLocator(interval=1))
-    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
+    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%H:00'))
     plt.xticks(evenly_spaced_datetimes, rotation=45)
     plt.yticks(evenly_spaced_numbers)
     # 設定colorbar
