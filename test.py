@@ -109,7 +109,7 @@ def draw(dataset, start_time, end_time, start_height, end_height):
     plt.xticks(evenly_spaced_datetimes, rotation=45)
     plt.yticks(evenly_spaced_numbers)
     # 設定colorbar
-    cbar = plt.colorbar(label='Wind Speed (m s⁻¹)')
+    cbar = plt.colorbar(ticks=np.arange(0, 16, 1),label='Wind Speed(m s^-1)')
     plt.clim(0, 15)
 
     # # 顯示圖表
