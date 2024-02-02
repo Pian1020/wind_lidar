@@ -70,7 +70,7 @@ def draw(dataset, start_time, end_time, start_height, end_height):
     cmap5 = make_color_map([1, 1, 0], [1, 0, 0], 20)
 
     # Concatenate the colormaps
-    c_map = np.vstack((np.ones((3, 3)), cmap1, cmap2, cmap3, cmap4, cmap5, np.zeros((3, 3))))
+    c_map = np.vstack((np.ones((3, 3)), cmap1, cmap2, cmap3, cmap4, cmap5))
     custom_cmap = LinearSegmentedColormap.from_list('custom_cmap', c_map, N=256)
 
     plt.figure(figsize=(12, 6))
