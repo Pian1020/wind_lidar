@@ -63,15 +63,17 @@ def heightAdjust(dataset, start, end):
 def draw(dataset, start_time, end_time, start_height, end_height):
 
     # Create color map
-    cmap1 = make_color_map([1, 1, 1], [0.92, 0.92, 0.92], 5)
-    cmap2 = make_color_map([0.92, 0.92, 0.92], [0.460, 0.829, 1], 20)
-    cmap3 = make_color_map([0.460, 0.829, 1], [0.316, 1, 0.316], 20)
-    cmap4 = make_color_map([0.316, 1, 0.316], [1, 1, 0], 20)
-    cmap5 = make_color_map([1, 1, 0], [1, 0, 0], 20)
+    # cmap1 = make_color_map([1, 1, 1], [0.92, 0.92, 0.92], 5)
+    # cmap2 = make_color_map([0.92, 0.92, 0.92], [0.460, 0.829, 1], 20)
+    # cmap3 = make_color_map([0.460, 0.829, 1], [0.316, 1, 0.316], 20)
+    # cmap4 = make_color_map([0.316, 1, 0.316], [1, 1, 0], 20)
+    # cmap5 = make_color_map([1, 1, 0], [1, 0, 0], 20)
+    colors = [(1, 1, 1), (0.92, 0.92, 0.92), (0.460, 0.829, 1), (0.316, 1, 0.316), (1, 1, 0), (1, 0, 0)]
+    custom_cmap = LinearSegmentedColormap.from_list('custom_cmap', colors)
 
     # Concatenate the colormaps
-    c_map = np.vstack((np.ones((3, 3)), cmap1, cmap2, cmap3, cmap4, cmap5, np.zeros((3, 3))))
-    custom_cmap = LinearSegmentedColormap.from_list('custom_cmap', c_map, N=256)
+    # c_map = np.vstack((np.ones((3, 3)), cmap1, cmap2, cmap3, cmap4, cmap5, np.zeros((3, 3))))
+    # custom_cmap = LinearSegmentedColormap.from_list('custom_cmap', c_map, N=256)
 
     plt.figure(figsize=(12, 6))
 
