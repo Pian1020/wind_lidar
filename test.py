@@ -110,7 +110,7 @@ def draw(dataset, start_time, end_time, start_height, end_height):
     plt.yticks(evenly_spaced_numbers)
     # 設定colorbar
     cbar = plt.colorbar(ticks=np.arange(0, 16, 1),label='Wind Speed (m s⁻¹)')
-    plt.clim(0, 15)
+    plt.clim(0, 12)
 
     # # 顯示圖表
     plt.show()
