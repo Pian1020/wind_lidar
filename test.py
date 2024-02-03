@@ -77,19 +77,19 @@ def draw(dataset, start_time, end_time, start_height, end_height):
 
     # Create time stamps show on the graph
 
-    time_diff = (end_time - start_time) / 19
+    time_diff = (end_time - start_time) / 24
     evenly_spaced_datetimes = []
     evenly_spaced_datetimes.append(start_time)
-    for i in range(1, 19):
+    for i in range(1, 24):
         evenly_spaced_datetimes.append(start_time + i * time_diff)
     evenly_spaced_datetimes.append(end_time)
     plt.xlabel("Time (LT)")
 
     # Create height stamps to show on the graph
-    step_size = (end_height - start_height) / 9
+    step_size = (end_height - start_height) / 10
     evenly_spaced_numbers = []
     evenly_spaced_numbers.append(start_height)
-    for i in range(1, 9):
+    for i in range(1, 10):
         evenly_spaced_numbers.append(start_height + i * step_size)
     evenly_spaced_numbers.append(end_height)
     plt.ylabel("Height (m)")
