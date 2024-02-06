@@ -68,6 +68,8 @@ def draw(dataset, start_time, end_time, start_height, end_height):
     cmap3 = make_color_map([0.460, 0.829, 1], [0.316, 1, 0.316], 20)
     cmap4 = make_color_map([0.316, 1, 0.316], [1, 1, 0], 20)
     cmap5 = make_color_map([1, 1, 0], [1, 0, 0], 20)
+    # colors = [(1, 1, 1), (0.92, 0.92, 0.92), (0.460, 0.829, 1), (0.316, 1, 0.316), (1, 1, 0), (1, 0, 0)]
+    # custom_cmap = LinearSegmentedColormap.from_list('custom_cmap', colors)
 
     # Concatenate the colormaps
     c_map = np.vstack((np.ones((3, 3)), cmap1, cmap2, cmap3, cmap4, cmap5, np.zeros((3, 3))))
@@ -77,22 +79,22 @@ def draw(dataset, start_time, end_time, start_height, end_height):
 
     # Create time stamps show on the graph
 
-    time_diff = (end_time - start_time) / 19
+    time_diff = (end_time - start_time) / 24
     evenly_spaced_datetimes = []
     evenly_spaced_datetimes.append(start_time)
-    for i in range(1, 19):
+    for i in range(1, 24):
         evenly_spaced_datetimes.append(start_time + i * time_diff)
     evenly_spaced_datetimes.append(end_time)
-    plt.xlabel("datetime")
+    plt.xlabel("Time (LT)")
 
     # Create height stamps to show on the graph
-    step_size = (end_height - start_height) / 9
+    step_size = (end_height - start_height) / 10
     evenly_spaced_numbers = []
     evenly_spaced_numbers.append(start_height)
-    for i in range(1, 9):
+    for i in range(1, 10):
         evenly_spaced_numbers.append(start_height + i * step_size)
     evenly_spaced_numbers.append(end_height)
-    plt.ylabel("height")
+    plt.ylabel("Height (m)")
 
     # 繪製風速資料
     X = np.unique(dataset['datetime'].values)
@@ -105,14 +107,20 @@ def draw(dataset, start_time, end_time, start_height, end_height):
     xx, yy = np.meshgrid(X, Y)
     plt.pcolormesh(X, Y, Z.T, cmap=custom_cmap)
     plt.gca().xaxis.set_major_locator(mdates.HourLocator(interval=1))
-    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
+    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%H:00'))
     plt.xticks(evenly_spaced_datetimes, rotation=45)
     plt.yticks(evenly_spaced_numbers)
+    # 設定風向標
+    # plt.quiver(xx, yy, dataset['wind_speed'], dataset['wind_direction'], color='black', scale=20)
     # 設定colorbar
-    cbar = plt.colorbar(label='Wind Speed')
-    plt.clim(0, 15)
-
-    # # 顯示圖表
+    cbar = plt.colorbar(ticks=np.arange(0, 16, 1),label='Wind Speed (m s⁻¹)')
+    plt.clim(0, 12)
+    # Title
+    start_date_str = start_time.strftime('%m.%d')
+    end_date_str = end_time.strftime('%m.%d')
+    title = f'Wind Lidar wind profile during {start_date_str} to {end_date_str}'
+    plt.title(title, fontsize=16)
+    # 顯示圖表
     plt.show()
 
     # plt.savefig('wind.png')
