@@ -103,7 +103,7 @@ def draw(dataset, start_time, end_time, start_height, end_height):
     Z = np.array(Z)
     # Z = dataset['wind_speed'].values
     xx, yy = np.meshgrid(X, Y)
-    plt.pcolormesh(xx, yy, Z.T, cmap=custom_cmap)
+    plt.pcolormesh(X, Y, Z.T, cmap=custom_cmap)
     plt.gca().xaxis.set_major_locator(mdates.HourLocator(interval=1))
     plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
     plt.xticks(evenly_spaced_datetimes, rotation=45)
@@ -119,10 +119,14 @@ def draw(dataset, start_time, end_time, start_height, end_height):
 
 if __name__ == "__main__":
 
-    start_time = input()
-    end_time = input()
-    start_height = int(input())
-    end_height = int(input())
+    # start_time = input()
+    # end_time = input()
+    # start_height = int(input())
+    # end_height = int(input())
+    start_time = "2023/07/11 20:14:03"
+    end_time = "2023/07/12 20:14:03"
+    start_height = 1
+    end_height = 2000
 
     # defines the file directory that contains the HPL files
     root = os.getcwd()
