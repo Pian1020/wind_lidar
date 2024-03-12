@@ -133,7 +133,7 @@ if __name__ == "__main__":
     # end_height = int(input())
     start_time = "2023/07/11 20:14:03"
     end_time = "2023/07/12 20:14:03"
-    start_height = 1
+    start_height = 0
     end_height = 2000
 
     # defines the file directory that contains the HPL files
