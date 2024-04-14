@@ -155,7 +155,7 @@ def draw(dataset, start_time, end_time, start_height, end_height):
                 v = datetime_height_data['wind_speed'] * np.cos(np.radians(datetime_height_data['wind_direction']))
         
                 # Draw the vector field for wind direction and wind speed
-                plt.quiver(datetime_height_data['datetime'], datetime_height_data['height'], u, v, color='purple', scale=120, width=0.003)
+                plt.quiver(datetime_height_data['datetime'], datetime_height_data['height'], -u, -v, color='purple', scale=120, width=0.003)
 
     # Title
     start_date_str = start_time.strftime('%d')
