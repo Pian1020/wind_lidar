@@ -102,7 +102,7 @@ for i in range(count):
 cbar = plt.colorbar(label='Wind Speed')
 plt.clim(0, 15)
 
-#plt.yticks(H)
+plt.yticks(H)
 
 # 顯示圖表
 plt.show()
