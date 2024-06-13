@@ -55,13 +55,6 @@ def createDataset(path):
 
     return df_multi
 
-
-def make_color_map(start_color, end_color, num_steps):
-    r = np.linspace(start_color[0], end_color[0], num_steps)
-    g = np.linspace(start_color[1], end_color[1], num_steps)
-    b = np.linspace(start_color[2], end_color[2], num_steps)
-    return np.column_stack((r, g, b))
-
 def timeAdjust(dataset, start, end):
     selected_data = dataset[(dataset['datetime'] >= start) & (dataset['datetime'] <= end)]
     return selected_data
@@ -74,28 +67,13 @@ def draw(df, start_time, end_time, start_height, end_height):
     fig, ax1 = plt.subplots(figsize=(12, 8))
 
     # 矢量圖設置
-    ax1.set_xlabel("Date time")
+    ax1.set_xlabel("Wind Speed")
     ax1.set_ylabel("Height")
     ax1.grid(True, which='both', linestyle='--', linewidth=0.5)
-    ax1.xaxis.set_major_locator(mdates.HourLocator(interval=6))
-    ax1.xaxis.set_major_formatter(mdates.DateFormatter("%m-%d %H:%M"))
-
-    heights = df['height'].unique()
-    datetimes = pd.date_range(start_time, end_time, freq='1T')
-
-    for height in heights:
-        datetime_height_data = df[df['height'] == height]
-        if not datetime_height_data.empty:
-            u = datetime_height_data['wind_speed'] * np.sin(np.radians(datetime_height_data['wind_direction']))
-            v = datetime_height_data['wind_speed'] * np.cos(np.radians(datetime_height_data['wind_direction']))
-            ax1.quiver(datetime_height_data['datetime'], datetime_height_data['height'], u, v, color='purple', scale=120, width=0.003)
 
     # 風速折線圖設置
-    ax2 = ax1.twiny()
-    ax2.set_xlabel("Wind Speed")
-
     wind_speed_data = df.groupby('height')['wind_speed'].mean().reset_index()
-    ax2.plot(wind_speed_data['wind_speed'], wind_speed_data['height'], color='blue', marker='', linestyle='-')
+    ax1.plot(wind_speed_data['wind_speed'], wind_speed_data['height'], color='blue', marker='', linestyle='-')
 
     # 在折線圖上繪製矢量圖的箭頭
     for i in range(len(wind_speed_data)):
@@ -105,7 +83,7 @@ def draw(df, start_time, end_time, start_height, end_height):
         if not datetime_height_data.empty:
             u = datetime_height_data['wind_speed'].mean() * np.sin(np.radians(datetime_height_data['wind_direction'].mean()))
             v = datetime_height_data['wind_speed'].mean() * np.cos(np.radians(datetime_height_data['wind_direction'].mean()))
-            ax2.quiver(wind_speed, height, u, v, color='red', scale=120, width=0.003)
+            ax1.quiver(wind_speed, height, u, v, color='red', scale=120, width=0.003)
 
     start_date_str = start_time.strftime('%d')
     end_date_minus_1 = (end_time - timedelta(days=1)).strftime('%d')
