@@ -149,7 +149,7 @@ def draw(df, df2, start_time, end_time, start_height, end_height):
             v = datetime_height_data['wind_speed'].mean() * np.cos(np.radians(datetime_height_data['wind_direction'].mean()))
             ax2.quiver(wind_speed, height, u, v, color='r', scale=120, width=0.003)
 
-    title = f'Comparison between UAV and Wind LIDAR'
+    title = f'Wind Comparison between Yanchao-UAV and Kaoshiung-Wind-LIDAR at 24/02/29 00:00'
     plt.title(title, fontsize=16)
 
     fig.tight_layout()
