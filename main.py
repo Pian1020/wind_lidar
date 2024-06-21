@@ -48,6 +48,7 @@ def createDataset(path):
 
     # Convert DataFrame columns to appropriate data types
     df_multi['height'] = df_multi['height'].astype(int)
+    df_multi['height'] = df_multi['height']+15
     df_multi['wind_direction'] = df_multi['wind_direction'].astype(float)
     df_multi['wind_speed'] = df_multi['wind_speed'].astype(float)
 
@@ -105,7 +106,7 @@ def draw(dataset, start_time, end_time, start_height, end_height):
     for i in range(1, 5):
         evenly_spaced_numbers.append(start_height + i * step_size)
     evenly_spaced_numbers.append(end_height)
-    plt.ylabel("Height a.g.l (m)", fontsize=12)
+    plt.ylabel("Height (m, asl)", fontsize=12)
 
     # Draw wind speed data
     X = np.unique(dataset['datetime'].values)
@@ -163,7 +164,7 @@ def draw(dataset, start_time, end_time, start_height, end_height):
     if end_date_minus_1 <= start_date_str :
         title = f'UV-Wind profile of Halo Lidar at Kaohsiung during {start_date_str}'
     else:
-        title = f'UV-Wind profile of Halo Lidar at Kaohsiung during Feb {start_date_str}-{end_date_minus_1}, 2024'
+        title = f'UV-Wind profile of Halo Lidar at Kaohsiung during Feb {start_date_str}-29, 2024'
     plt.title(title, fontsize=16)
     
     # Show the plot
@@ -177,14 +178,14 @@ if __name__ == "__main__":
     end_time = input()
     start_height = int(input())
     end_height = int(input()) """
-    start_time = "2024/02/14 00:00:00"
-    end_time = "2024/02/17 00:00:00"
+    start_time = "2024/02/27 08:00:00"
+    end_time = "2024/02/29 08:00:00"
     start_height = 100
     end_height = 2000
 
     # defines the file directory that contains the HPL files
     root = os.getcwd()
-    file_path = root + "/iop1"
+    file_path = root + "/iop2"
 
     # Read file from the disk
     dataset = createDataset(file_path)

@@ -139,18 +139,22 @@ def draw(df, df2, start_time, end_time, start_height, end_height):
         if not datetime_height_data.empty:
             u = datetime_height_data['wind_speed'].mean() * np.sin(np.radians(datetime_height_data['wind_direction'].mean()))
             v = datetime_height_data['wind_speed'].mean() * np.cos(np.radians(datetime_height_data['wind_direction'].mean()))
-            ax1.quiver(wind_speed, height, u, v, color='b', scale=120, width=0.003)
-    for i in range(len(wind_speed_data2)):
+            quiver1 = ax1.quiver(wind_speed, height, -u, -v, color='lightblue', scale=120, width=0.003)
+    for i in range(0, len(wind_speed_data2), 3):
         height = wind_speed_data2['height'].iloc[i]
         wind_speed = wind_speed_data2['wind_speed'].iloc[i]
         datetime_height_data = df2[df2['height'] == height]
         if not datetime_height_data.empty:
             u = datetime_height_data['wind_speed'].mean() * np.sin(np.radians(datetime_height_data['wind_direction'].mean()))
             v = datetime_height_data['wind_speed'].mean() * np.cos(np.radians(datetime_height_data['wind_direction'].mean()))
-            ax2.quiver(wind_speed, height, u, v, color='r', scale=120, width=0.003)
+            quiver2 = ax2.quiver(wind_speed, height, -u, -v, color='lightcoral', scale=120, width=0.003)
 
     title = f'Wind Comparison between Yanchao-UAV and Kaoshiung-Wind-LIDAR at 24/02/29 00:00'
     plt.title(title, fontsize=16)
+
+    # 添加圖例
+    if quiver1 and quiver2:
+        ax1.legend([quiver1, quiver2], ['Yanchao-UAV', 'Kaoshiung-Wind-LIDAR'], loc='upper right')
 
     fig.tight_layout()
     plt.show()
