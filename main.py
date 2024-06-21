@@ -100,12 +100,13 @@ def draw(dataset, start_time, end_time, start_height, end_height):
     plt.xlabel("LocalTime (hh)", fontsize=12)
 
     # Create height stamps to show on the graph
-    step_size = (end_height - start_height) / 5
+    """ step_size = (end_height - start_height) / 5
     evenly_spaced_numbers = []
     evenly_spaced_numbers.append(start_height)
     for i in range(1, 5):
         evenly_spaced_numbers.append(start_height + i * step_size)
-    evenly_spaced_numbers.append(end_height)
+    evenly_spaced_numbers.append(end_height) """
+    evenly_spaced_numbers = [100, 400, 800, 1200, 1600, 2000]
     plt.ylabel("Height (m, asl)", fontsize=12)
 
     # Draw wind speed data
@@ -180,8 +181,8 @@ if __name__ == "__main__":
     end_height = int(input()) """
     start_time = "2024/02/27 08:00:00"
     end_time = "2024/02/29 08:00:00"
-    start_height = 100
-    end_height = 2000
+    start_height = 80
+    end_height = 2010
 
     # defines the file directory that contains the HPL files
     root = os.getcwd()
